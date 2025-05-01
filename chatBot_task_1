@@ -1,0 +1,72 @@
+import random
+import re
+
+# List of jokes, facts, and motivational quotes
+jokes = [
+    "Why did the computer go to the doctor? Because it had a virus! 🤒",
+    "Why don't programmers like nature? It has too many bugs! 🐞",
+    "Why do programmers prefer dark mode? Because the light attracts bugs! 💻",
+]
+
+facts = [
+    "Did you know? The first computer virus was created in 1986! 🦠",
+    "A typical computer has over 1 billion transistors! 🔌",
+    "The word 'robot' comes from a Czech word 'robota' meaning 'forced labor'. 🤖",
+]
+
+motivational_quotes = [
+    "Keep going, you're doing great! 💪",
+    "Believe in yourself, and all that you are! ✨",
+    "Success is the sum of small efforts, repeated day in and day out. 🌟",
+]
+
+bot_name = "PeppyBot"
+
+def chatbot():
+    print(f"{bot_name}: Hello! I'm PeepyBot, your fun-loving chatbot. How can I help you today?")
+
+    while True:
+        user_input = input("You: ").lower()  # Convert user input to lowercase for easy matching
+
+        # Exit condition
+        if user_input == "exit":
+            print(f"{bot_name}: Bye-bye, buddy! Stay curious and keep exploring! 👋")
+            break
+
+        # Simple Greetings
+        elif re.search(r"\b(hi|hello|hey|yo)\b", user_input):
+            print(f"{bot_name}: Hey there, buddy! 👋 How's it going today?")
+
+        # Ask for a joke
+        elif re.search(r"\b(joke|funny|tell me a joke)\b", user_input):
+            print(f"{bot_name}: Sure! Here's a joke for you: {random.choice(jokes)}")
+
+        # Ask for a fun fact
+        elif re.search(r"\b(fact|tell me a fact)\b", user_input):
+            print(f"{bot_name}: Here's an interesting fact: {random.choice(facts)}")
+
+        # Motivational quote when user says they're feeling down
+        elif re.search(r"\b(feeling down|bored|unmotivated|low)\b", user_input):
+            print(f"{bot_name}: I’m really sorry to hear you’re feeling down. Here’s a motivational quote for you: {random.choice(motivational_quotes)}. You’ve got this!")
+
+        # Respond to Compliments (self-love)
+        elif re.search(r"\b(you're awesome|you're great)\b", user_input):
+            print(f"{bot_name}: Aww, you're making me blush... if only I had cheeks! 😳 But thanks, buddy!")
+
+        # Respond to "how are you"
+        elif "how are you" in user_input:
+            print(f"{bot_name}: I'm doing great, thanks for asking! Just here to chat and have fun with you. 🤖")
+
+        # Respond to "what are you"
+        elif "what are you" in user_input:
+            print(f"{bot_name}: I am a chatbot, a digital companion created to entertain, inform, and chat with you! 💬")
+
+        # Respond to "what's your name?"
+        elif re.search(r"\b(name)\b", user_input):
+            print(f"{bot_name}: My name is {bot_name}, and I'm here to keep you company!")
+
+        # Random response for unknown queries
+        else:
+            print(f"{bot_name}: Hmm, I'm not sure what you mean, but I can try to help if you explain a bit more! 😅")
+
+chatbot()
