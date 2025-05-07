@@ -1,0 +1,82 @@
+import time
+from colorama import init, Fore
+
+# Initialize colorama for colored text
+init(autoreset=True)
+
+# Movie database with genres and ratings
+movie_db = {
+    "3 Idiots": {"genre": "Comedy Drama", "rating": 9.0},
+    "Dangal": {"genre": "Sports Drama", "rating": 8.4},
+    "Interstellar": {"genre": "Sci-Fi Drama", "rating": 8.6},
+    "Kabir Singh": {"genre": "Romantic Drama", "rating": 7.1},
+    "Inception": {"genre": "Sci-Fi Thriller", "rating": 8.8},
+    "Pathaan": {"genre": "Action Spy Thriller", "rating": 6.9},
+    "The Dark Knight": {"genre": "Action Crime Superhero", "rating": 9.0},
+    "Chak De! India": {"genre": "Sports Drama", "rating": 8.2},
+    "KGF": {"genre": "Action Thriller", "rating": 8.2},
+    "Avengers: Endgame": {"genre": "Action Superhero Sci-Fi", "rating": 8.4},
+    "Vikram": {"genre": "Tamil Action Thriller", "rating": 8.4},
+    "Jawan": {"genre": "Action Drama", "rating": 7.3},
+    "Ponniyin Selvan": {"genre": "Tamil Historical Epic", "rating": 7.6},
+    "Leo": {"genre": "Tamil Action Thriller", "rating": 7.9},
+    "Vampire Diaries": {"genre": "Fantasy Romance Series", "rating": 7.7},
+    "Stranger Things": {"genre": "Mystery Sci-Fi Series", "rating": 8.7},
+    "All of Us Are Dead": {"genre": "Zombie Horror Series", "rating": 7.5},
+    "Wednesday": {"genre": "Mystery Fantasy Series", "rating": 8.1},
+    "The Family Man": {"genre": "Indian Spy Thriller Series", "rating": 8.7},
+    "Mirzapur": {"genre": "Indian Crime Thriller", "rating": 8.5}
+}
+
+def recommend_movies(user_input):
+    liked_genre = movie_db[user_input]["genre"].split()[0]  # Get main genre (e.g., Action, Sci-Fi)
+    
+    # Recommend items with similar genre and high rating
+    recommendations = []
+    for title, info in movie_db.items():
+        if title != user_input and liked_genre in info["genre"] and info["rating"] >= 7.5:
+            recommendations.append((title, info["genre"], info["rating"]))
+  
+    recommendations.sort(key=lambda x: x[2], reverse=True)
+
+   
+    output = f"\n🎬 Welcome to MovieFusion Recommender!\n\n"
+    output += f"💡 Because you liked '{user_input}', you might also enjoy:\n\n"
+    
+    if recommendations:  # Ensure there are recommendations
+        for title, genre, rating in recommendations:
+            output += f"👉 {title} ({genre}) - ⭐ {rating}/10\n"
+    else:
+        output += "Sorry, no similar recommendations available right now. Please try another movie!\n"
+    
+    output += "\n🎉 Enjoy your movie marathon, buddy! 🍿"
+    return output
+
+def get_user_input():
+    print(Fore.YELLOW + "\n🎥 Welcome to MovieFusion Recommender!")
+    print(Fore.CYAN + "Here are some movies you can choose from: ")
+    for title in movie_db.keys():
+        print(Fore.GREEN + f"- {title} ({movie_db[title]['genre']}, ⭐ {movie_db[title]['rating']}/10)")
+
+    # Get movie name from the user
+    user_input = input(Fore.CYAN + "\nEnter a movie or series you like: ").strip()
+    return user_input
+
+def main():
+    while True:
+        user_input = get_user_input()
+        
+        # Validate if the movie exists in the database
+        if user_input in movie_db:
+            result = recommend_movies(user_input)
+            print(Fore.MAGENTA + result)
+        else:
+            print(Fore.RED + "⚠️ Invalid movie/series name. Please try again!")
+        
+        again = input(Fore.BLUE + "\nWant more recommendations? Type 'yes' to continue or 'no' to exit: ").strip().lower()
+        if again != 'yes':
+            print(Fore.GREEN + "\n👋 Thanks for using MovieFusion Recommender. See you next time, buddy!")
+            break
+
+if __name__ == "__main__":
+    main()
