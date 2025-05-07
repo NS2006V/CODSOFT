@@ -1,0 +1,132 @@
+import time
+import math
+from colorama import init, Fore, Style
+
+init(autoreset=True)
+
+# Game board and score tracker
+board = [' ' for _ in range(9)]
+scoreboard = {'Player': 0, 'PeepyBot': 0, 'Draws': 0}
+
+# Symbols
+AI = 'O'
+HUMAN = 'X'
+
+def display_board():
+    print()
+    for row in [board[i*3:(i+1)*3] for i in range(3)]:
+        row_str = ' | '.join([Fore.CYAN + c if c == HUMAN else Fore.MAGENTA + c for c in row])
+        print(Fore.YELLOW + f"| {row_str} |")
+    print()
+
+def reset_board():
+    global board
+    board = [' ' for _ in range(9)]
+
+def get_valid_moves():
+    return [i for i, val in enumerate(board) if val == ' ']
+
+def place_symbol(index, symbol):
+    board[index] = symbol
+
+def is_winner(symbol):
+    win_patterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Columns
+        [0, 4, 8], [2, 4, 6]              # Diagonals
+    ]
+    return any(all(board[i] == symbol for i in combo) for combo in win_patterns)
+
+def board_full():
+    return ' ' not in board
+
+def minimax(player):
+    opponent = HUMAN if player == AI else AI
+
+    if is_winner(HUMAN):
+        return {'score': -10}
+    elif is_winner(AI):
+        return {'score': 10}
+    elif board_full():
+        return {'score': 0}
+
+    moves = []
+
+    for move in get_valid_moves():
+        place_symbol(move, player)
+        result = minimax(opponent)
+        board[move] = ' '
+        result['position'] = move
+        moves.append(result)
+
+    if player == AI:
+        return max(moves, key=lambda x: x['score'])
+    else:
+        return min(moves, key=lambda x: x['score'])
+
+def peepybot_move():
+    print(Fore.MAGENTA + "\nPeepyBot is analyzing the battlefield... 🤖🧠\n")
+    time.sleep(1)
+    move = minimax(AI)['position']
+    place_symbol(move, AI)
+
+def player_move():
+    while True:
+        try:
+            move = int(input(Fore.CYAN + "Your turn, buddy! Pick a cell (1-9): ")) - 1
+            if move in get_valid_moves():
+                place_symbol(move, HUMAN)
+                break
+            else:
+                print(Fore.RED + "⚠️ That spot is already taken or invalid. Try again!")
+        except ValueError:
+            print(Fore.RED + "⚠️ Please enter a number from 1 to 9.")
+
+def show_scoreboard():
+    print(Fore.GREEN + "\n===== 🎯 SCOREBOARD =====")
+    for k, v in scoreboard.items():
+        print(f"{k}: {v}")
+    print("==========================\n")
+
+def play_game():
+    print(Fore.YELLOW + "\n🌟 Welcome to the Ultimate Tic-Tac-Toe Showdown with PeepyBot!")
+    show_scoreboard()
+    display_board()
+
+    while True:
+        player_move()
+        display_board()
+        if is_winner(HUMAN):
+            print(Fore.CYAN + "🎉 You outsmarted PeepyBot! You're a legend, buddy!")
+            scoreboard['Player'] += 1
+            break
+        if board_full():
+            print(Fore.YELLOW + "🤝 It's a tie! Such balance, wow.")
+            scoreboard['Draws'] += 1
+            break
+
+        peepybot_move()
+        display_board()
+        if is_winner(AI):
+            print(Fore.MAGENTA + "😈 PeepyBot wins this time! Try again, buddy!")
+            scoreboard['PeepyBot'] += 1
+            break
+        if board_full():
+            print(Fore.YELLOW + "🤝 It's a tie! Well fought.")
+            scoreboard['Draws'] += 1
+            break
+
+    show_scoreboard()
+
+def main():
+    while True:
+        reset_board()
+        play_game()
+        again = input(Fore.BLUE + "Want to play again? Type 'buddy' to continue: ").strip().lower()
+        if again != 'buddy':
+            print(Fore.GREEN + "\n👋 Thanks for playing with PeepyBot. See you soon, buddy!")
+            break
+
+if __name__ == "__main__":
+    main()
+
